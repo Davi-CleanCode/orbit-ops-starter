@@ -1,0 +1,9 @@
+
+node_modules
+bin/
+obj/
+.env
+*.db
+.vscode/
+dist/
+.build/

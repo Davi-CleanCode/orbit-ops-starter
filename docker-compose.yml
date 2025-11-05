@@ -1,0 +1,36 @@
+
+version: '3.8'
+services:
+  orbit-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-orbit}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-orbitpass}
+      POSTGRES_DB: ${POSTGRES_DB:-orbit_db}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - orbit_db_data:/var/lib/postgresql/data
+
+  orbit-backend:
+    build: ./backend
+    environment:
+      - ConnectionStrings__Default=Host=orbit-db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - JWT__Secret=${JWT_SECRET}
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - orbit-db
+    ports:
+      - "5000:80"
+
+  orbit-frontend:
+    build: ./frontend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - orbit-backend
+
+volumes:
+  orbit_db_data:

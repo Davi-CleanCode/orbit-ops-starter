@@ -1,0 +1,42 @@
+
+name: CI/CD - Orbit Ops
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: orbit
+          POSTGRES_PASSWORD: orbitpass
+          POSTGRES_DB: orbit_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U orbit -d orbit_db -h localhost -p 5432"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    - name: Build backend
+      working-directory: ./backend/OrbitOps.API
+      run: dotnet build -c Release
+    - name: Build frontend
+      working-directory: ./frontend
+      run: npm ci && npm run build
+    # Add deploy steps to Render/Vercel as needed (secrets required).
