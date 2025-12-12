@@ -29,17 +29,12 @@ npm run dev
 
 Abra em: http://localhost:3000
 
-Backend (ASP.NET)
-
-cd backend
-dotnet restore
-dotnet run
-
-A API deve rodar em: http://localhost:5000
-
-(ou a porta configurada no projeto)
-
 
 📄 LINCEÇA
 
 Orbit!
+
+
+
+
+(arrumar o login para que seja a primeira pagina a ser aberta)
